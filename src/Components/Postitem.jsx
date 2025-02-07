@@ -10,6 +10,7 @@ const Postitem = ({ id, postID, thumbnail, title, author, description, category,
    <section className="postitem max-w-md mx-auto h-[450px] p-4 bg-white rounded-lg shadow-lg overflow-hidden transition-transform hover:shadow-2xl duration-300">
   <div className='relative w-full h-[250px] overflow-hidden rounded-md'>
     <img
+    loading='lazy'
       className='w-full h-full object-cover rounded-md'
       src={thumbnail[0]}
       alt=""
