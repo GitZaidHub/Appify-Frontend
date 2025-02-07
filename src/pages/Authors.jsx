@@ -30,9 +30,9 @@ const Authors = () => {
   }
 
   return (
-    <section className="Authors container mx-auto h-[80vh]">
+    <section className="Authors container mx-auto min-h-screen">
     <h1 className="lg:text-4xl md:text-2xl text-xl font-bold text-center m-10">Authors</h1>
-    <div className="mx-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="mx-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 my-6 lg:grid-cols-4 gap-6">
       {authors.map((p) => (
         <Link
           key={p._id}
