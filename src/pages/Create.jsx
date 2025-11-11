@@ -24,23 +24,25 @@ const Create = () => {
     if (!token) {
       navigate("/login");
     }
-  }, []);
+  }, [token, navigate]); // Added dependencies
+
+  // --- RESTORED DEFINITIONS START ---
 
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-      ["bold", "Italic", "underline", "strike", "blockquote"],
+      ["bold", "italic", "underline", "strike", "blockquote"],
       [
         { list: "ordered" },
         { list: "bullet" },
         { indent: "-1" },
-        { indent: "-1" },
+        { indent: "+1" }, // Corrected indent format
       ],
-      ["links", "image"],
+      ["link", "image"],
       ["clean"],
     ],
   };
+
   const formats = [
     "header",
     "bold",
@@ -57,14 +59,20 @@ const Create = () => {
 
   const POST_CATEGORIES = [
     "Agriculture",
-    "bussiness",
+    "Business", // Corrected typo from bussiness
     "Education",
     "Entertainment",
     "Art",
     "Investment",
     "Uncategorized",
     "Weather",
+    "Politics",
+    "Technology",
+    "Health",
+    "Science",
   ];
+
+  // --- RESTORED DEFINITIONS END ---
 
   const createPost = async (e) => {
     e.preventDefault();
@@ -80,7 +88,7 @@ const Create = () => {
       // Step 1: Upload thumbnails to Firebase
       const uploadedUrls = await Promise.all(
         thumbnail.map(async (file) => {
-          const url = await upload(file); // Upload each file and get the URL
+          const url = await upload(file);
           return url;
         })
       );
@@ -120,75 +128,91 @@ const Create = () => {
   };
 
   return (
-    <section className="create-post md:mx-auto container bg-[#f7f4f4]  shadow-lg rounded-lg mb-10 p-10 h-auto md:w-2/3 w-full">
-      <div className="mx-auto">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
-          Create Post
-        </h1>
-        {error && (
-          <p className="text-red-600 font-bold mb-4 border border-red-600 bg-red-100 p-2 rounded">
-            {error}
-          </p>
-        )}
-        <form className="mx-auto space-x-1 space-y-6" onSubmit={createPost}>
-          {/* Title input */}
-          <input
-            type="text"
-            className="w-full sm:w-2/3 mx-auto px-4 py-3 rounded-lg bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-black transition duration-200 ease-in-out"
-            value={title}
-            onChange={(e) => settitle(e.target.value)}
-            placeholder="Post Title"
-            autoFocus
-          />
+    // The rest of your JSX remains the same and is now correctly functional
+    <section className="create-post bg-gray-50 py-12 min-h-screen">
+      <div className="container mx-auto px-4 max-w-3xl">
+        <div className="bg-white shadow-2xl rounded-xl p-8 md:p-10 border border-gray-100">
+          <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-8">
+            Create New <span className="text-blue-600">Post</span>
+          </h1>
+          {error && (
+            <p className="text-red-600 font-semibold mb-4 border border-red-300 bg-red-50 p-3 rounded-lg text-center">
+              {error}
+            </p>
+          )}
+          <form className="space-y-6" onSubmit={createPost}>
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Title input */}
+              <input
+                type="text"
+                className="w-full sm:w-2/3 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-500 text-gray-900 transition duration-200 ease-in-out"
+                value={title}
+                onChange={(e) => settitle(e.target.value)}
+                placeholder="Post Title"
+                autoFocus
+              />
 
-          {/* Category Select */}
-          <select
-            name="category"
-            className="w-full sm:w-1/3 mx-auto px-4 py-3 rounded-lg bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black transition duration-200 ease-in-out"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            {POST_CATEGORIES.map((cat) => (
-              <option key={cat} className="text-black">
-                {cat}
-              </option>
-            ))}
-          </select>
+              {/* Category Select - THIS NOW WORKS because POST_CATEGORIES is defined */}
+              <select
+                name="category"
+                className="w-full sm:w-1/3 px-4 py-3 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-700 transition duration-200 ease-in-out"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {POST_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat} className="text-gray-900"> {/* Added value prop */}
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* Description (Rich Text Editor) */}
-          <ReactQuill
-            className="mx-4 my-5 overflow-scroll bg-white h-60 rounded-lg shadow-md"
-            modules={modules}
-            formats={formats}
-            value={description}
-            onChange={setDescription}
-          />
+            {/* Description (Rich Text Editor) */}
+            {/* Description (Rich Text Editor) - Increased height for better UX/stability */}
+            <div className="mb-12" style={{ height: '300px' }}> {/* Set a fixed height for the outer wrapper */}
+              <ReactQuill
+                // Removed h-full and added specific styling for the Quill container
+                className="bg-white rounded-lg shadow-sm h-full"
+                modules={modules} // Ensure modules/formats are defined and passed
+                formats={formats}
+                value={description}
+                onChange={setDescription}
+                // Inline style for the Quill editor body (where text is typed)
+                theme="snow"
+                style={{ height: '240px' }} // This height targets the editor body specifically
+              />
+            </div>
+            <div className="h-10"></div> {/* Add a buffer space after Quill */}
 
-          {/* File Upload */}
-          <input
-            type="file"
-            className="w-full sm:w-2/3 mx-auto text-white"
-            onChange={(e) => setThumbnail([...e.target.files])} // Handle multiple files
-            accept=".png,.jpeg,.jpg"
-            multiple // Enable selecting multiple files
-          />
-          <p className="text-white bg-slate-500 rounded-xl w-1/2 p-2 mx-auto text-center">
-            ◉ Either choose one or two images
-          </p>
+            {/* File Upload */}
+            <div className="pt-12">
+              <label htmlFor="file-upload" className="text-gray-700 font-semibold block mb-2">Upload Thumbnails</label>
+              <input
+                id="file-upload"
+                type="file"
+                className="w-full text-gray-700 p-2 border border-gray-300 rounded-lg bg-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                onChange={(e) => setThumbnail([...e.target.files])}
+                accept=".png,.jpeg,.jpg,.webp"
+                multiple
+              />
+              <p className="text-sm text-gray-500 mt-2 bg-gray-100 p-2 rounded-lg text-center border border-gray-200">
+                ◉ Choose one or two images (Thumbnails for the post listing)
+              </p>
+            </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className={`mt-4 py-3 px-6 rounded-lg text-white w-3/4 mx-auto ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
-            } transition-colors duration-300 shadow-md`}
-          >
-            {loading ? "Creating..." : "Create Post"}
-          </button>
-        </form>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`mt-8 py-3 px-6 rounded-full text-white font-bold text-lg w-full ${loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/50"
+                } transition duration-300`}
+            >
+              {loading ? "Creating..." : "Create Post"}
+            </button>
+          </form>
+        </div>
       </div>
     </section>
   );

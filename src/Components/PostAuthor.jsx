@@ -11,9 +11,10 @@ import ru from 'javascript-time-ago/locale/ru.json'
 TimeAgo.addDefaultLocale(en) // Add English as the default locale
 TimeAgo.addLocale(ru) // Add Russian as an additional locale
 
-
 const PostAuthor = ({createdAt,authorID}) => {
   const [author, setAuthor] = useState(null)
+  
+  // LOGIC (UNTOUCHED)
   useEffect(() => {
     const getAuthor=async()=>{
       try {
@@ -27,36 +28,28 @@ const PostAuthor = ({createdAt,authorID}) => {
   }, [authorID])
   
   return (
-    
-    <Link className="flex items-center gap-2 mr-3" to={`/posts/users/${authorID}`}>
-  <div className="avatar">
-    <img className="rounded-full w-11 h-11 object-cover" src={author?.avatar} alt="avatar" />
-  </div>
-  <div className="author-detail">
-    <p className="font-serif text-sm">{author?.name}</p>
-    <p className="font-thin text-xs"><ReactTimeAgo date={new Date(createdAt)} locale="en-US" /></p>
-  </div>
-</Link>
+    // Clean Link container with subtle hover effect
+    <Link className="flex items-center gap-3 hover:bg-gray-50 rounded-full pr-3 transition duration-150" to={`/posts/users/${authorID}`}>
+      
+      {/* Avatar Image */}
+      <div className="avatar flex-shrink-0">
+        <img 
+          className="rounded-full w-10 h-10 object-cover ring-1 ring-gray-200" // Reduced size, subtle ring
+          src={author?.avatar} 
+          alt="Author avatar" 
+        />
+      </div>
+
+      {/* Details */}
+      <div className="author-detail">
+        <p className="font-semibold text-sm text-gray-800 hover:text-blue-600 transition duration-150">{author?.name}</p>
+        <p className="text-xs text-gray-500">
+            <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
+        </p>
+      </div>
+    </Link>
 
   );
 };
 
 export default PostAuthor;
-{/*<div className="flex items-center gap-2 mr-3  ">
-        <Link to={"posts/users/sdfs"} >
-
-        <div>
-          <img
-            className="rounded-full size-11"
-            src={"./img/avatar1.jpg"}
-            alt="avatar"
-          />
-        </div>
-        </Link>
-        <div>
-
-        <p className="font-serif">Zayn </p>
-        <p className="font-thin" >just Now</p>
-        </div>
- 
-      </div> */}

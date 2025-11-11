@@ -13,6 +13,7 @@ const Header = () => {
   const [isDeskMenu, setIsDeskMenu] = useState(false)
   const [author, setAuthor] = useState([]);
 
+  // --- LOGIC (UNTOUCHED) ---
   useEffect(() => {
     const getAuthor = async () => {
       try {
@@ -51,69 +52,92 @@ const Header = () => {
   const HamberGer = () => {
     setIsDeskMenu(!isDeskMenu)
   }
+  // --- END LOGIC ---
 
   return (
-    <nav className="flex justify-between sticky top-0 z-20 text-black w-full items-center backdrop-blur-md px-6 py-4 bg-white/70">
-      <div className="container mx-auto flex items-center justify-between">
+    // Clean, solid white background with a subtle bottom shadow for elevation
+    <nav className="flex justify-center sticky top-0 z-50 text-gray-900 w-full items-center px-6 py-4 bg-white shadow-md"> 
+      <div className="container mx-auto flex items-center justify-between max-w-7xl">
+
         {/* Logo */}
-        <Link to="/" className="pl-3">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 transition-transform duration-300 tracking-wider hover:scale-105">
-            BlogVibes
+        <Link to="/" className="pl-0">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-wider transition duration-300 hover:text-blue-600">
+            BLOG<span className="text-blue-600">VIBES</span>
           </h1>
         </Link>
 
         {/* Desktop Navigation */}
-        <ul className="md:flex gap-6 w-[55%] hidden justify-between items-center">
+        {/* Adjusted width management and simplified alignment */}
+        <ul className="md:flex gap-8 hidden items-center"> 
           <li>
-            <Link className="text-lg px-3 py-2 text-gray-900 hover:scale-105" to="/">
+            <Link 
+              className="text-base font-medium text-gray-700 hover:text-blue-600 transition duration-150 relative py-2 group" 
+              to="/"
+            >
               Home
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
             </Link>
           </li>
           {currentUser?.id && (
             <li>
-              <Link className="text-lg px-3 py-2 text-gray-900 hover:scale-105" to="/create">
+              <Link 
+                className="text-base font-medium text-gray-700 hover:text-blue-600 transition duration-150 relative py-2 group" 
+                to="/create"
+              >
                 Create
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
               </Link>
             </li>
           )}
           <li>
-            <Link className="text-lg px-3 py-2 text-gray-900 hover:scale-105" to="/authors">
+            <Link 
+              className="text-base font-medium text-gray-700 hover:text-blue-600 transition duration-150 relative py-2 group" 
+              to="/authors"
+            >
               Authors
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
             </Link>
           </li>
           {!currentUser?.id && (
             <li>
-              <Link className="text-lg px-3 py-2 text-gray-900 hover:scale-105" to="/login">
+              <Link 
+                className="px-5 py-2 bg-blue-600 text-white rounded-full font-semibold text-base hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg" 
+                to="/login"
+              >
                 Login
               </Link>
             </li>
           )}
+          
+          {/* User Avatar and Dropdown */}
           {currentUser?.id && (
-            <li>
+            <li className="relative">
               <img
                 id="avatarButton"
-                className="w-10 h-10 rounded-full cursor-pointer ring-black ring-1"
+                className="w-10 h-10 rounded-full cursor-pointer object-cover ring-2 ring-blue-600/50 hover:ring-blue-600 transition duration-200"
                 src={author?.avatar}
                 alt="User dropdown"
-                onClick={HamberGer}
+                onClick={HamberGer} // Using HamberGer for the avatar click handler
               />
+              
+              {/* Dropdown Menu - Modernized styling and positioning */}
               {isDeskMenu && (
                 <div
                   ref={menuRef}
-                  className="absolute right-6 mt-2 bg-slate-100 ring-2 divide-y divide-gray-100 rounded-lg shadow w-44"
+                  className="absolute right-0 top-full mt-3 bg-white border border-gray-200 divide-y divide-gray-100 rounded-lg shadow-xl w-52 overflow-hidden" // Subtle shadow, clean borders
                 >
-                  <div className="px-4 py-3 text-sm text-gray-900">
-                    <div>{currentUser.name}</div>
-                    <div className="font-medium truncate">
+                  <div className="px-4 py-3 text-sm text-gray-900 bg-gray-50 border-b border-gray-100">
+                    <div className="font-bold text-base">{currentUser.name}</div>
+                    <div className="font-light truncate text-gray-500 text-sm">
                       {currentUser?.email.split("@")[0]}
                     </div>
                   </div>
-                  <ul className="py-2 text-sm text-gray-700">
+                  <ul className="py-1 text-sm text-gray-700">
                     <li>
                       <Link
                         to={`/mypost/${currentUser?.id}`}
-                        className="block px-4 py-2 hover:bg-gray-300"
-                        onClick={() => setIsMenuOpen(false)}
+                        className="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600 transition duration-150"
+                        onClick={() => setIsDeskMenu(false)}
                       >
                         Dashboard
                       </Link>
@@ -121,18 +145,18 @@ const Header = () => {
                     <li>
                       <Link
                         to={`/myprofile/${currentUser?.id}`}
-                        className="block px-4 py-2 hover:bg-gray-300"
-                        onClick={() => setIsMenuOpen(false)}
+                        className="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600 transition duration-150"
+                        onClick={() => setIsDeskMenu(false)}
                       >
                         My Profile
                       </Link>
                     </li>
                   </ul>
-                  <div className="py-1">
+                  <div className="py-1 border-t border-gray-100">
                     <Link
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition duration-150"
                       to={"/logout"}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => setIsDeskMenu(false)}
                     >
                       Log out
                     </Link>
@@ -143,35 +167,36 @@ const Header = () => {
           )}
         </ul>
 
-        {/* Hamburger Menu */}
-        <div className={`md:hidden  ${isMenuOpen ? "hidden" : "block"} block z-30`} onClick={toggleMenu}>
-          <RxHamburgerMenu className="text-3xl cursor-pointer" />
+        {/* Hamburger Menu Icon (Desktop menu visibility check is updated) */}
+        <div className="md:hidden block z-50">
+           {/* Toggling between hamburger and close icon */}
+           <button onClick={toggleMenu} className="p-2 text-2xl text-gray-700 hover:text-blue-600 transition duration-150">
+              {isMenuOpen ? '✕' : <RxHamburgerMenu className="text-3xl" />}
+           </button>
         </div>
+
 
         {/* Full-Screen Mobile Menu */}
         {isMenuOpen && (
           <motion.div
             ref={menuRef}
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed top-0 right-0 w-full h-screen bg-white flex flex-col items-center justify-center z-20 backdrop-blur-lg"
+            className="fixed top-0 left-0 w-full h-screen bg-white flex flex-col items-center justify-center z-40" // Ensure z-index is below the fixed header
           >
-            <button className="absolute top-5 right-6 text-3xl" onClick={toggleMenu}>
-              ✖
-            </button>
-            <ul className="flex flex-col gap-8 text-2xl font-semibold">
-              <li><Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link></li>
-              {currentUser?.id && <li><Link to="/create" onClick={() => setIsMenuOpen(false)}>Create</Link></li>}
-              <li><Link to="/authors" onClick={() => setIsMenuOpen(false)}>Authors</Link></li>
+            <ul className="flex flex-col gap-10 text-3xl font-semibold text-gray-900">
+              <li><Link className="hover:text-blue-600 transition duration-150" to="/" onClick={() => setIsMenuOpen(false)}>Home</Link></li>
+              {currentUser?.id && <li><Link className="hover:text-blue-600 transition duration-150" to="/create" onClick={() => setIsMenuOpen(false)}>Create</Link></li>}
+              <li><Link className="hover:text-blue-600 transition duration-150" to="/authors" onClick={() => setIsMenuOpen(false)}>Authors</Link></li>
               {!currentUser?.id ? (
-                <li><Link to="/login" onClick={() => setIsMenuOpen(false)}>Login</Link></li>
+                <li><Link className="px-6 py-3 bg-blue-600 text-white rounded-full text-2xl hover:bg-blue-700 transition duration-300" to="/login" onClick={() => setIsMenuOpen(false)}>Login</Link></li>
               ) : (
                 <>
-                  <li><Link to={`/mypost/${currentUser.id}`} onClick={() => setIsMenuOpen(false)}>Dashboard</Link></li>
-                  <li><Link to={`/myprofile/${currentUser.id}`} onClick={() => setIsMenuOpen(false)}>My Profile</Link></li>
-                  <li><Link to="/logout" onClick={() => setIsMenuOpen(false)}>Log out</Link></li>
+                  <li className="border-t border-gray-100 pt-10"><Link className="hover:text-blue-600 transition duration-150" to={`/mypost/${currentUser.id}`} onClick={() => setIsMenuOpen(false)}>Dashboard</Link></li>
+                  <li><Link className="hover:text-blue-600 transition duration-150" to={`/myprofile/${currentUser.id}`} onClick={() => setIsMenuOpen(false)}>My Profile</Link></li>
+                  <li><Link className="hover:text-red-600 transition duration-150" to="/logout" onClick={() => setIsMenuOpen(false)}>Log out</Link></li>
                 </>
               )}
             </ul>

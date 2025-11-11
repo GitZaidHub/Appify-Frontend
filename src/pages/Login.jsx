@@ -19,6 +19,7 @@ const Login = () => {
   const { setcurrentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
+  // --- LOGIC (UNTOUCHED) ---
   const handleLogin = async (e) => {
     e.preventDefault();
     seterror(" ");
@@ -29,30 +30,13 @@ const Login = () => {
         userData
       );
       const user = await response.data;
-    //  console.log(user);
       setcurrentUser(user);
       toast.success(`${user.name} loged in succefully`, {
         duration: 4000,
         position: "top-center",
-
-        // Styling
-        style: {},
-        className: "",
-
-        // Custom Icon
         icon: "🔥",
-
-        // Change colors of success/error/loading icon
-        iconTheme: {
-          primary: "#000",
-          secondary: "#fff",
-        },
-
-        // Aria
-        ariaProps: {
-          role: "status",
-          "aria-live": "polite",
-        },
+        iconTheme: { primary: "#000", secondary: "#fff" },
+        ariaProps: { role: "status", "aria-live": "polite" },
       });
       navigate("/");
     } catch (error) {
@@ -62,7 +46,6 @@ const Login = () => {
     }
   };
   const handleChange = (e) => {
-    // Update form data dynamically
     setUserData((prevstate) => {
       return {
         ...prevstate,
@@ -73,42 +56,42 @@ const Login = () => {
   const makePassVisible = () => {
     setPassVisible(!passVisible);
   };
+  // --- END LOGIC ---
+
   return (
-    <section className="container mx-auto w-full md:w-1/2 my-3 py-16 px-4 md:px-24 h-[85vh] flex items-center justify-center">
-      <div className="bg-white bg-opacity-40 py-8 px-8 md:px-12 rounded-xl backdrop-blur-xl shadow-lg w-full max-w-lg">
-        <h1 className="text-center mb-6 text-3xl font-bold text-gray-800">
-          Log In
+    // Background container is subtle light gray
+    <section className="bg-gray-50 min-h-screen py-16 flex items-center justify-center">
+      
+      {/* Form Card: Elevated, clean white background, minimal shadow */}
+      <div className="bg-white py-10 px-8 md:px-12 rounded-xl shadow-2xl border border-gray-100 w-full max-w-md">
+        <h1 className="text-center mb-8 text-3xl font-extrabold text-gray-900">
+          Welcome Back!
         </h1>
 
         <form className="flex flex-col gap-5" onSubmit={handleLogin}>
-          {/* Email Input */}
+          
+          {/* Email Input - Clean border and blue focus ring */}
           <div className="flex flex-col w-full">
-            <label
-              htmlFor="email"
-              className="text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="email" className="text-sm font-semibold text-gray-700 mb-1">
               Email
             </label>
             <input
-              className="rounded-lg px-4 py-2 w-full border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mt-1"
+              className="rounded-lg px-4 py-3 w-full border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition duration-150"
               type="email"
-              placeholder="Enter email"
+              placeholder="Enter your email"
               name="email"
               value={userData.email}
               onChange={handleChange}
             />
           </div>
 
-          {/* Password Input */}
+          {/* Password Input - Clean border and blue focus ring */}
           <div className="flex flex-col w-full relative">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="text-sm font-semibold text-gray-700 mb-1">
               Password
             </label>
             <input
-              className="rounded-lg px-4 py-2 w-full border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mt-1"
+              className="rounded-lg px-4 py-3 w-full border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition duration-150"
               type={passVisible ? "text" : "password"}
               placeholder="Enter Password"
               name="password"
@@ -116,42 +99,42 @@ const Login = () => {
               onChange={handleChange}
             />
 
-            {/* Toggle Password Visibility */}
+            {/* Toggle Password Visibility - Icon color updated for clarity */}
             <div
-              className="absolute top-10 right-3 cursor-pointer"
+              className="absolute top-1/2 right-3 transform translate-y-[-5%] cursor-pointer text-gray-500 hover:text-blue-600"
               onClick={makePassVisible}
             >
               {passVisible ? (
-                <FaRegEye className="text-black" />
+                <FaRegEye className="text-xl" />
               ) : (
-                <FaEyeSlash className="text-black" />
+                <FaEyeSlash className="text-xl" />
               )}
             </div>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit Button - Blue Accent, strong hover, full width */}
           <button
             type="submit"
             disabled={loading}
-            className={`mt-4 py-2 px-4  rounded-lg text-white w-3/4 mx-auto ${
-              loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-            } transition-colors duration-300 `}
+            className={`mt-4 py-3 px-4 rounded-full text-white font-bold text-lg w-full ${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/50"
+            } transition duration-300`}
           >
-            {loading ? "Login..." : "Login"}
+            {loading ? "Logging In..." : "Login"}
           </button>
 
           {/* Error Message */}
           {error && (
-            <h3 className="text-center text-red-600 text-sm font-medium mt-2">
+            <h3 className="text-center text-red-600 text-sm font-semibold mt-2 bg-red-50 p-2 rounded-lg border border-red-200">
               {error}
             </h3>
           )}
 
-          {/* Register Link Inside Form */}
-          <small className="text-center mt-4">
+          {/* Register Link */}
+          <small className="text-center mt-4 text-gray-600">
             Don't have an account?{" "}
             <Link
-              className="text-blue-600 hover:underline font-medium"
+              className="text-blue-600 hover:text-blue-700 font-bold transition duration-150"
               to="/register"
             >
               Register

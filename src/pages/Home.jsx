@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import Posts from '../Components/Posts';
+import Posts from '../Components/Posts'; // Posts component is already styled
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/userContext";
 
@@ -8,14 +8,17 @@ const Home = () => {
   const { currentUser } = useContext(UserContext);
   const token = currentUser?.token;
 
+  // --- LOGIC (UNTOUCHED) ---
   useEffect(() => {
     if (!token) {
       navigate("/landingPage");
     }
-  }, [token, navigate]); // Add dependencies to avoid warnings
+  }, [token, navigate]); 
+  // --- END LOGIC ---
 
   return (
-    <section>
+    // Ensuring the Home wrapper is a clean background
+    <section className="bg-white min-h-screen"> 
       <Posts />
     </section>
   );

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { FaCheck, FaRegEdit } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
+// ... (Firebase imports and other imports)
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../lib/firebase" // Import Firebase storage
+import { storage } from "../lib/firebase" 
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -11,6 +12,7 @@ import { useContext } from "react";
 import axios from "axios";
 
 const Userprofile = () => {
+  // ... (State definitions)
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -22,6 +24,7 @@ const Userprofile = () => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
 
+  // ... (Hooks and useEffects for logic - UNTOUCHED)
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
   const token = currentUser?.token;
@@ -58,23 +61,16 @@ const Userprofile = () => {
   const changeAvatar = async () => {
     setAvatartIstouched(false);
     try {
-      // Firebase storage reference
       const avatarRef = ref(storage, `avatars/${avatar.name}`);
-      
-      // Upload image to Firebase storage
       const snapshot = await uploadBytes(avatarRef, avatar);
-      
-      // Get image URL from Firebase storage
       const downloadURL = await getDownloadURL(snapshot.ref);
   
-      // Send image URL to backend instead of the file itself
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/users/change-avatar`,
-        { avatarURL: downloadURL }, // Pass the image URL
+        { avatarURL: downloadURL }, 
         { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
       );
-     // console.log(response)
-      setAvatar(downloadURL); // Update avatar with URL from Firebase
+      setAvatar(downloadURL); 
       toast.success(`Avatar changed`, { duration: 4000, position: "top-center" });
     } catch (error) {
       seterror(error.response.data.message);
@@ -87,7 +83,7 @@ const Userprofile = () => {
     
     const userData = {
       name,
-      email,  // Adding email to match the backend logic
+      email,
       currentPassword,
       newPassword,
       bio,
@@ -100,42 +96,45 @@ const Userprofile = () => {
       { withCredentials: true, headers: { authorization: `Bearer ${token}` } }
     );
     if(response.status ==  200){
-      // log user out
       navigate('/logout')
       
     }
     } catch (error) {
       seterror(error.response.data.message)
-    //  console.log(error.response.data.message)
     }
   };
+  // --- END LOGIC ---
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-300 flex flex-col justify-center items-center py-10">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center">
-        My Profile
+    // Clean, light background container
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center py-12 px-4">
+      <h1 className="text-4xl font-extrabold mb-10 text-gray-900 text-center">
+        My <span className="text-blue-600">Profile</span>
       </h1>
 
       {error && (
-        <p className="text-sm font-semibold mb-8 text-red-600 text-center">
+        <p className="text-sm font-semibold mb-8 text-red-600 text-center bg-red-50 p-2 rounded-lg border border-red-200">
           {error}
         </p>
       )}
 
-      <section className="userprofile container flex flex-col md:flex-row items-center md:gap-12 justify-center w-full max-w-5xl mx-auto bg-white shadow-lg rounded-xl p-8">
+      {/* Main Profile Card - White, spacious, elevated */}
+      <section className="userprofile container flex flex-col md:flex-row items-start md:gap-12 justify-center w-full max-w-4xl mx-auto bg-white shadow-2xl rounded-xl p-8 md:p-12 border border-gray-100">
+        
         {/* Avatar Section */}
-        <div className="flex flex-col items-center justify-center mb-8 md:mb-0 relative">
+        <div className="flex flex-col items-center justify-center mb-8 md:mb-0 relative w-full md:w-1/3 border-b md:border-b-0 md:border-r border-gray-100 pb-8 md:pr-10">
           <img
-            className="rounded-full w-32 h-32 md:w-48 md:h-48 object-cover border-4 border-gray-300 shadow-md"
+            className="rounded-full w-32 h-32 md:w-40 md:h-40 object-cover border-4 border-gray-200 shadow-md"
             src={avatar}
             alt="Avatar"
           />
           <label
             htmlFor="avatar"
-            className="absolute top-4 right-4 md:top-6 md:right-6 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition cursor-pointer"
+            // Blue accent on edit button
+            className="absolute top-0 right-1/4 md:right-0 bg-white p-2 rounded-full shadow-lg hover:bg-blue-50 transition cursor-pointer border border-gray-200"
             onClick={() => setAvatartIstouched(true)}
           >
-            <FaRegEdit className="text-gray-600 text-lg" />
+            <FaRegEdit className="text-blue-600 text-lg" />
           </label>
           <input
             className="hidden"
@@ -146,16 +145,17 @@ const Userprofile = () => {
             onChange={(e) => setAvatar(e.target.files[0])}
           />
           {avatartIstouched && (
+            // Green accent for save action
             <button
               onClick={changeAvatar}
-              className="absolute bottom-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm hover:bg-green-600 transition"
+              className="absolute bottom-10 bg-green-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-green-600 transition shadow-md"
             >
-              <FaCheck className="inline-block mr-1" /> Save
+              <FaCheck className="inline-block mr-1" /> Save Avatar
             </button>
           )}
-          <p className="mt-4 text-lg font-semibold text-gray-800">{name}</p>
+          <p className="mt-6 text-xl font-bold text-gray-900">{name}</p>
           <Link to={`/mypost/${id}`}>
-            <button className="mt-4 px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition">
+            <button className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition shadow-md">
               My Posts
             </button>
           </Link>
@@ -163,46 +163,47 @@ const Userprofile = () => {
 
         {/* Form Section */}
         <form
-          className="flex flex-col w-full md:w-1/2 space-y-5"
+          className="flex flex-col w-full md:w-2/3 space-y-5 md:pt-0 pt-6 md:pl-8"
           onSubmit={updateDetail}
         >
+          {/* Inputs - Clean border and blue focus ring */}
           <input
-            className="rounded-lg px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:outline-none"
+            className="rounded-lg px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition duration-150"
             type="text"
             placeholder="User Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <input
-            className="rounded-lg px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:outline-none"
+            className="rounded-lg px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition duration-150"
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
-            className="rounded-lg px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:outline-none"
+            className="rounded-lg px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition duration-150"
             type="password"
-            placeholder="Current Password"
+            placeholder="Current Password (To Confirm Changes)"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
           />
           <input
-            className="rounded-lg px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:outline-none"
+            className="rounded-lg px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition duration-150"
             type="password"
-            placeholder="New Password"
+            placeholder="New Password (Leave blank to keep current)"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
           />
           <textarea
-            className="rounded-lg px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:outline-none"
-            placeholder="Bio"
+            className="rounded-lg px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:outline-none transition duration-150 h-32"
+            placeholder="Bio (Tell us about yourself)"
             value={bio}
             onChange={(e) => setBio(e.target.value)}
           />
           <button
             type="submit"
-            className="px-6 py-3 rounded-lg bg-gray-800 text-white w-1/2 mx-auto hover:bg-gray-900 transition"
+            className="px-6 py-3 rounded-full bg-blue-600 text-white font-bold text-lg w-full mt-6 hover:bg-blue-700 transition shadow-md shadow-blue-500/50"
           >
             Save Changes
           </button>
